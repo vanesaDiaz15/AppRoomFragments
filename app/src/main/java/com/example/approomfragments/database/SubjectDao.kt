@@ -11,6 +11,9 @@ interface SubjectDao {
     @Query("SELECT count(*) FROM subject")
     fun getCount() : Int
 
+    @Query("SELECT * FROM subject")
+    fun getSubjects():List<Subject>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(vararg subject: Subject)
 }

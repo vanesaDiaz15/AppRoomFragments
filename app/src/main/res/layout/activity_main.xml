@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="10" />
@@ -18,14 +18,7 @@
         android:id="@+id/frameLayoutProf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="30" >
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-    </FrameLayout>
+        android:layout_weight="30" />
 
     <FrameLayout
         android:id="@+id/frameLayoutFragment"

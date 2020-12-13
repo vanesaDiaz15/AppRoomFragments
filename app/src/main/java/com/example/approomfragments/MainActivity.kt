@@ -3,11 +3,11 @@ package com.example.approomfragments
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.TextView
+import android.widget.*
 import com.example.approomfragments.database.*
 import com.example.approomfragments.fragments.ListaFragment
 import com.example.approomfragments.fragments.FichaFragment
+import com.example.approomfragments.fragments.ProfesorFragment
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -21,9 +21,12 @@ class MainActivity : AppCompatActivity() {
 
     var listaFragment : ListaFragment? = null
     var fichaFragent : FichaFragment? = null
+    var profesorFragment : ProfesorFragment? = null
 
     var segundoFragmentActivo = false
-    lateinit var textView:TextView
+
+    lateinit var spinner: Spinner
+    lateinit var selected:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,19 +36,62 @@ class MainActivity : AppCompatActivity() {
         frameLayoutLista = findViewById(R.id.frameLayoutFragmentLista)
         frameLayoutFicha = findViewById(R.id.frameLayoutFragmentLFicha)
         frameLayoutProfesorFragment = findViewById(R.id.frameLayoutProf)
-        textView = findViewById(R.id.textView)
 
         listaFragment = ListaFragment.newInstance()
         listaFragment!!.activityListener = activityListener
+
+        fichaFragent = FichaFragment()
+        profesorFragment = ProfesorFragment.newInstance()
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+
+
+
+        if (frameLayout == null) {
+
+
+            fragmentTransaction.add(R.id.frameLayoutProf, profesorFragment!!)
+            fragmentTransaction.add(R.id.frameLayoutFragmentLista, listaFragment!!)
+            fragmentTransaction.add(R.id.frameLayoutFragmentLFicha, fichaFragent!!)
+        } else {
+            fragmentTransaction.add(R.id.frameLayoutProf, profesorFragment!!)
+            fragmentTransaction.add(R.id.frameLayoutFragment, listaFragment!!)
+        }
+
+        fragmentTransaction.commit()
+
         var dataRepository = DataRepository(this)
-        var numeroClientes = dataRepository.getCountStudent()
-        if(numeroClientes.toString().toInt() == 0){
+        var numStudents = dataRepository.getCountStudent()
+        var numSubjects = dataRepository.getCuntSubject()
+        var numTeachers = dataRepository.getCountTeacher()
+
+        if (numStudents.toString().toInt() == 0 && numSubjects.toString().toInt() == 0 && numTeachers.toString().toInt() == 0) {
             rellenarDatos()
         }
 
+        spinner = findViewById<Spinner>(R.id.spinner)
+        val array = resources.getStringArray(R.array.subject)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, array)
+        spinner.adapter = adapter
 
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+            ) {
+                profesorFragment!!.selected = parent.getItemAtPosition(position).toString()
+                listaFragment!!.selected = parent.getItemAtPosition(position).toString()
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+        }
     }
-
     var activityListener = View.OnClickListener {
         if (frameLayout !=null) {
             val fragmentManager = supportFragmentManager
@@ -57,7 +103,21 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        //fichaFragent!!.updateData(listaFragment!!.itemSeleccionado)
+        fichaFragent!!.updateData(listaFragment!!.itemSeleccionado)
+    }
+
+    override fun onBackPressed() {
+        if (segundoFragmentActivo && frameLayout != null){
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.frameLayoutFragment, listaFragment!!)
+            fragmentTransaction.commit()
+            fragmentManager.executePendingTransactions()
+            segundoFragmentActivo = false
+        }
+        else{
+            super.onBackPressed()
+        }
     }
 
     fun rellenarDatos(){
@@ -65,7 +125,6 @@ class MainActivity : AppCompatActivity() {
         var programacion: Subject? = null
         var bufferedReaderRecurso = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.datos)))
         var textoLeido = bufferedReaderRecurso.readLine()
-        textView.text = textoLeido
         var jsonjObject = JSONObject(textoLeido)
         val subjects: JSONArray = jsonjObject.getJSONArray("asignaturas")
         for (i in 0 until subjects.length()) {
@@ -81,7 +140,6 @@ class MainActivity : AppCompatActivity() {
         var teacherProg = ArrayList<Teacher>()
         for (i in 0 until teachers.length()) {
             val teacher = teachers.getJSONObject(i)
-            textView.text = teacher.getString("asignatura")
             if(teacher.getString("asignatura").equals("programacion")){
                 val teacherB : Teacher = Teacher(teacher.getInt("codigo"), teacher.getString("nombre"), teacher.getString("apellido"))
                 teacherProg.add(teacherB)

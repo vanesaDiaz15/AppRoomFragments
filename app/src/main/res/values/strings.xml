@@ -2,4 +2,8 @@
     <string name="app_name">AppRoomFragments</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="subject">
+        <item>BBDD</item>
+        <item>programacion</item>
+    </string-array>
 </resources>

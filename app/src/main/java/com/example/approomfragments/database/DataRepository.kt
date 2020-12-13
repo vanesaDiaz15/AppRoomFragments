@@ -17,6 +17,14 @@ class DataRepository(context: Context) {
         return -1
     }
 
+    fun getSubjectStudent(name: String):List<SubjectStudent>{
+        return GetSubjectStudentOne(subjectStudenDao!!, name).execute().get()
+    }
+
+    fun getSubjectTeacher(name:String):List<SubjectTeacher>{
+        return GetSubjectTeacherOne(subjectTeacherDao!!, name).execute().get()
+    }
+
     private class InsertSubjectStudentAsyncTask(private val subjectDao: SubjectDao, private val studentDao: StudenDao, private val subjectStudentDao: SubjectStudentDao): AsyncTask<SubjectStudent, Void, Int>(){
         override fun doInBackground(vararg subjectStudent: SubjectStudent?): Int {
             try{
@@ -84,6 +92,22 @@ class DataRepository(context: Context) {
         }
     }
 
+    fun getCountTeacher():Int{
+        var getCount = GetCountTeacher(teacherDao!!).execute().get()
+        return getCount
+    }
+
+    private class GetCountTeacher(private val teacherDao: TeacherDao):AsyncTask<Void, Void, Int>(){
+        override fun doInBackground(vararg params: Void?): Int {
+            return teacherDao.getCount()
+        }
+    }
+
+    fun getCuntSubject():Int{
+        var getCountSubject = GetCountSubject(subjectDao!!).execute().get()
+        return getCountSubject
+    }
+
     private class GetSubjectsTeacher(private val subjectTeacherDao1: SubjectTeacherDao) :AsyncTask<Void, Void, List<SubjectTeacher>>(){
         override fun doInBackground(vararg params: Void?): List<SubjectTeacher> {
             return subjectTeacherDao1.getSubjectsT()
@@ -104,5 +128,16 @@ class DataRepository(context: Context) {
         override fun doInBackground(vararg params: Void?): List<SubjectStudent> {
             return subjectStudentDao.getSubjectsSOne(name)
         }
+    }
+
+    private class GetSubjects(private val subjectDao: SubjectDao):AsyncTask<Void, Void, List<Subject>>(){
+        override fun doInBackground(vararg params: Void?): List<Subject> {
+            return subjectDao.getSubjects()
+        }
+    }
+
+    fun getSubjects():List<Subject>{
+        var getCountSubject = GetSubjects(subjectDao!!).execute().get()
+        return getCountSubject
     }
 }
