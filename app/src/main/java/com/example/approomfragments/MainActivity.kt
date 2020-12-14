@@ -26,40 +26,16 @@ class MainActivity : AppCompatActivity() {
     var segundoFragmentActivo = false
 
     lateinit var spinner: Spinner
-    lateinit var selected:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        savedInstanceState
 
         frameLayout = findViewById(R.id.frameLayoutFragment)
         frameLayoutLista = findViewById(R.id.frameLayoutFragmentLista)
         frameLayoutFicha = findViewById(R.id.frameLayoutFragmentLFicha)
         frameLayoutProfesorFragment = findViewById(R.id.frameLayoutProf)
-
-        listaFragment = ListaFragment.newInstance()
-        listaFragment!!.activityListener = activityListener
-
-        fichaFragent = FichaFragment()
-        profesorFragment = ProfesorFragment.newInstance()
-
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-
-
-
-        if (frameLayout == null) {
-
-
-            fragmentTransaction.add(R.id.frameLayoutProf, profesorFragment!!)
-            fragmentTransaction.add(R.id.frameLayoutFragmentLista, listaFragment!!)
-            fragmentTransaction.add(R.id.frameLayoutFragmentLFicha, fichaFragent!!)
-        } else {
-            fragmentTransaction.add(R.id.frameLayoutProf, profesorFragment!!)
-            fragmentTransaction.add(R.id.frameLayoutFragment, listaFragment!!)
-        }
-
-        fragmentTransaction.commit()
 
         var dataRepository = DataRepository(this)
         var numStudents = dataRepository.getCountStudent()
@@ -70,10 +46,27 @@ class MainActivity : AppCompatActivity() {
             rellenarDatos()
         }
 
+        var subjects = ArrayList<String>()
+        var data = DataRepository(this)
+        var sub = data.getSubjects()
+
+        val numProductos = sub.component1().name.toString()
+        val prog = sub.component2().name
+        subjects.add(numProductos)
+        subjects.add(prog)
+
         spinner = findViewById<Spinner>(R.id.spinner)
-        val array = resources.getStringArray(R.array.subject)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, array)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, subjects)
         spinner.adapter = adapter
+
+        listaFragment = ListaFragment.newInstance()
+        listaFragment!!.activityListener = activityListener
+
+        fichaFragent = FichaFragment()
+        profesorFragment = ProfesorFragment.newInstance()
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -82,15 +75,30 @@ class MainActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
             ) {
-                profesorFragment!!.selected = parent.getItemAtPosition(position).toString()
-                listaFragment!!.selected = parent.getItemAtPosition(position).toString()
+
+                profesorFragment!!.update(parent.getItemAtPosition(position).toString())
+                listaFragment!!.leer(parent.getItemAtPosition(position).toString())
 
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                profesorFragment!!.update("programacion")
+                listaFragment!!.leer("BBDD")
             }
         }
+
+        if (frameLayout == null) {
+            fragmentTransaction.add(R.id.frameLayoutProf, profesorFragment!!)
+            fragmentTransaction.add(R.id.frameLayoutFragmentLista, listaFragment!!)
+            fragmentTransaction.add(R.id.frameLayoutFragmentLFicha, fichaFragent!!)
+        } else {
+            fragmentTransaction.add(R.id.frameLayoutProf, profesorFragment!!)
+            fragmentTransaction.add(R.id.frameLayoutFragment, listaFragment!!)
+        }
+
+        fragmentTransaction.commit()
+
+
     }
     var activityListener = View.OnClickListener {
         if (frameLayout !=null) {
@@ -101,7 +109,6 @@ class MainActivity : AppCompatActivity() {
             fragmentManager.executePendingTransactions()
             segundoFragmentActivo = true
         }
-
 
         fichaFragent!!.updateData(listaFragment!!.itemSeleccionado)
     }

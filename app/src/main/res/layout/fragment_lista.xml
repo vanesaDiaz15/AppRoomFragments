@@ -5,9 +5,25 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ListaFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="100px" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textViewAlumn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Alumnos"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="175px" />
+    </LinearLayout>
+
 </FrameLayout>

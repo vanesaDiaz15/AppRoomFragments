@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Spinner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.approomfragments.MainActivity
@@ -14,7 +12,6 @@ import com.example.approomfragments.R
 import com.example.approomfragments.adapters.ItemAdapter
 import com.example.approomfragments.database.DataRepository
 import com.example.approomfragments.database.Student
-import com.example.approomfragments.database.SubjectStudent
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +26,7 @@ private const val ARG_PARAM2 = "param2"
 class ListaFragment : Fragment() {
     var activityListener: View.OnClickListener? = null
     var itemSeleccionado: Student? = null
-    var selected :String = "BBDD"
+    var recyclerViewLista: RecyclerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -41,24 +38,13 @@ class ListaFragment : Fragment() {
         // Inflate the layout for this fragment
         val v= inflater.inflate(R.layout.fragment_lista, container, false)
 
-        val recyclerViewLista: RecyclerView = v.findViewById<View>(R.id.recyclerView) as RecyclerView
-
-
-        var adapter = ItemAdapter(leer()) { item ->
-            itemSeleccionado = item
-            if (activityListener != null) {
-                activityListener!!.onClick(view)
-            }
-        }
-
-        recyclerViewLista.setAdapter(adapter)
-        recyclerViewLista.setLayoutManager(LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
+        recyclerViewLista = v.findViewById<View>(R.id.recyclerView) as RecyclerView
 
         return v
     }
 
-    fun leer():ArrayList<Student>{
-        val appContext = context!!.applicationContext
+    fun leer(selected:String){
+        var appContext = context!!.applicationContext
 
         var items = ArrayList<Student>()
         var dataRepository = DataRepository(appContext)
@@ -71,7 +57,17 @@ class ListaFragment : Fragment() {
             val apeStudent = students.component1().students[i].apeStudent.toString()
             items.add(Student(0, nameStudent, apeStudent))
         }
-        return items
+
+        var adapter = ItemAdapter(items) { item ->
+            itemSeleccionado = item
+            if (activityListener != null) {
+                activityListener!!.onClick(view)
+            }
+        }
+
+        recyclerViewLista!!.setAdapter(adapter)
+        recyclerViewLista!!.setLayoutManager(LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
+
     }
 
     companion object {

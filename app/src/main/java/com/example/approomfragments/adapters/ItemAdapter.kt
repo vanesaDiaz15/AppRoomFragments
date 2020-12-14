@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.approomfragments.MainActivity
 import com.example.approomfragments.R
 import com.example.approomfragments.database.Student
+import com.example.approomfragments.fragments.ListaFragment
 
 class ItemAdapter(var items: ArrayList<Student>, private val listener: (Student) -> Unit) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
@@ -20,7 +22,7 @@ class ItemAdapter(var items: ArrayList<Student>, private val listener: (Student)
     //this method is binding the data on the list
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(items[position])
-        holder.itemView.setOnClickListener { listener(items[position]) }
+        holder.itemView.setOnClickListener {listener(items[position]) }
     }
 
     //this method is giving the size of the list
@@ -31,11 +33,17 @@ class ItemAdapter(var items: ArrayList<Student>, private val listener: (Student)
 
     //the class is hodling the list view
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textViewNombre :TextView
+        val textViewApe : TextView
+        init {
+            textViewNombre = itemView.findViewById<TextView>(R.id.textViewName)
+            textViewApe = itemView.findViewById<TextView>(R.id.textViewApe)
+        }
 
         fun bindItems(cliente: Student) {
-            val textViewNombre = itemView.findViewById<TextView>(R.id.textViewName)
+
             textViewNombre.text = cliente.nameStudent
-            val textViewApe = itemView.findViewById<TextView>(R.id.textViewApe)
+
             textViewApe.text = cliente.apeStudent
         }
     }
