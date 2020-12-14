@@ -2,12 +2,14 @@ package com.example.approomfragments
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.widget.*
 import com.example.approomfragments.database.*
 import com.example.approomfragments.fragments.ListaFragment
 import com.example.approomfragments.fragments.FichaFragment
 import com.example.approomfragments.fragments.ProfesorFragment
+import kotlinx.coroutines.selects.select
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -25,12 +27,11 @@ class MainActivity : AppCompatActivity() {
 
     var segundoFragmentActivo = false
 
-    lateinit var spinner: Spinner
+    lateinit var select:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        savedInstanceState
 
         frameLayout = findViewById(R.id.frameLayoutFragment)
         frameLayoutLista = findViewById(R.id.frameLayoutFragmentLista)
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         subjects.add(numProductos)
         subjects.add(prog)
 
-        spinner = findViewById<Spinner>(R.id.spinner)
+        var spinner = findViewById<Spinner>(R.id.spinner)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, subjects)
         spinner.adapter = adapter
 
@@ -67,23 +68,23 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
+        select = spinner.selectedItem.toString()
+
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View,
+                    view: View?,
                     position: Int,
                     id: Long
             ) {
-
-                profesorFragment!!.update(parent.getItemAtPosition(position).toString())
-                listaFragment!!.leer(parent.getItemAtPosition(position).toString())
+                select = parent.getItemAtPosition(position).toString()
+                profesorFragment!!.update(select)
+                listaFragment!!.leer(select)
 
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                profesorFragment!!.update("programacion")
-                listaFragment!!.leer("BBDD")
             }
         }
 
@@ -185,4 +186,15 @@ class MainActivity : AppCompatActivity() {
         dataRepository.insertST(subTecProg)
         bufferedReaderRecurso.close()
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("select", select)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        select = savedInstanceState.getString("select").toString()
+    }
 }
+

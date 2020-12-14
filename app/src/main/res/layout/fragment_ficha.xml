@@ -25,14 +25,12 @@
             android:id="@+id/textViewFichaNombreP"
             android:layout_width="87dp"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textAlignment="center" />
 
         <TextView
             android:id="@+id/textViewFichaApellidoP"
             android:layout_width="113dp"
-            android:layout_height="match_parent"
-            android:text="TextView" />
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </LinearLayout>
