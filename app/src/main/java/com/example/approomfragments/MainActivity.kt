@@ -2,14 +2,12 @@ package com.example.approomfragments
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.widget.*
 import com.example.approomfragments.database.*
 import com.example.approomfragments.fragments.ListaFragment
 import com.example.approomfragments.fragments.FichaFragment
 import com.example.approomfragments.fragments.ProfesorFragment
-import kotlinx.coroutines.selects.select
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -51,9 +49,9 @@ class MainActivity : AppCompatActivity() {
         var data = DataRepository(this)
         var sub = data.getSubjects()
 
-        val numProductos = sub.component1().name.toString()
+        val bbdd = sub.component1().name
         val prog = sub.component2().name
-        subjects.add(numProductos)
+        subjects.add(bbdd)
         subjects.add(prog)
 
         var spinner = findViewById<Spinner>(R.id.spinner)
@@ -66,11 +64,6 @@ class MainActivity : AppCompatActivity() {
         fichaFragent = FichaFragment()
         profesorFragment = ProfesorFragment.newInstance()
 
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        select = spinner.selectedItem.toString()
-
-
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                     parent: AdapterView<*>,
@@ -81,12 +74,17 @@ class MainActivity : AppCompatActivity() {
                 select = parent.getItemAtPosition(position).toString()
                 profesorFragment!!.update(select)
                 listaFragment!!.leer(select)
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
+                select = parent!!.getItemAtPosition(0).toString()
+                profesorFragment!!.update("BBDD")
+                listaFragment!!.leer(select)
             }
         }
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
 
         if (frameLayout == null) {
             fragmentTransaction.add(R.id.frameLayoutProf, profesorFragment!!)
@@ -98,14 +96,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         fragmentTransaction.commit()
-
-
     }
     var activityListener = View.OnClickListener {
         if (frameLayout !=null) {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.frameLayoutFragment, fichaFragent!!)
+            fragmentTransaction.hide(profesorFragment!!)
             fragmentTransaction.commit()
             fragmentManager.executePendingTransactions()
             segundoFragmentActivo = true
@@ -119,6 +116,7 @@ class MainActivity : AppCompatActivity() {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.frameLayoutFragment, listaFragment!!)
+            fragmentTransaction.show(profesorFragment!!)
             fragmentTransaction.commit()
             fragmentManager.executePendingTransactions()
             segundoFragmentActivo = false

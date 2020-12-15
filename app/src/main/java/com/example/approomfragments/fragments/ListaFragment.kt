@@ -27,6 +27,7 @@ class ListaFragment : Fragment() {
     var activityListener: View.OnClickListener? = null
     var itemSeleccionado: Student? = null
     var recyclerViewLista: RecyclerView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -65,10 +66,11 @@ class ListaFragment : Fragment() {
             }
         }
 
-        recyclerViewLista!!.setAdapter(adapter)
         recyclerViewLista!!.setLayoutManager(LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
-
+        recyclerViewLista!!.setAdapter(adapter)
     }
+
+
 
     companion object {
         @JvmStatic

@@ -5,10 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.approomfragments.MainActivity
 import com.example.approomfragments.R
 import com.example.approomfragments.database.Student
-import com.example.approomfragments.fragments.ListaFragment
 
 class ItemAdapter(var items: ArrayList<Student>, private val listener: (Student) -> Unit) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
@@ -27,7 +25,11 @@ class ItemAdapter(var items: ArrayList<Student>, private val listener: (Student)
 
     //this method is giving the size of the list
     override fun getItemCount(): Int {
-        return items.size
+        if (items != null){
+            return items.size
+        }else{
+            return 0
+        }
     }
 
 
@@ -40,11 +42,11 @@ class ItemAdapter(var items: ArrayList<Student>, private val listener: (Student)
             textViewApe = itemView.findViewById<TextView>(R.id.textViewApe)
         }
 
-        fun bindItems(cliente: Student) {
+        fun bindItems(student: Student) {
 
-            textViewNombre.text = cliente.nameStudent
+            textViewNombre.text = student.nameStudent
 
-            textViewApe.text = cliente.apeStudent
+            textViewApe.text = student.apeStudent
         }
     }
 }
