@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.approomfragments.MainActivity
 import com.example.approomfragments.R
 import com.example.approomfragments.adapters.ItemAdapter
 import com.example.approomfragments.database.DataRepository
@@ -51,9 +50,9 @@ class ListaFragment : Fragment() {
         var dataRepository = DataRepository(appContext)
         var students = dataRepository.getSubjectStudent(selected)
 
-        val numProductos = students.component1().students.size.toString()
+        val numStudents = students.component1().students.size.toString()
 
-        for (i in 0..numProductos.toInt() - 1) {
+        for (i in 0..numStudents.toInt() - 1) {
             val nameStudent = students.component1().students[i].nameStudent.toString()
             val apeStudent = students.component1().students[i].apeStudent.toString()
             items.add(Student(0, nameStudent, apeStudent))
