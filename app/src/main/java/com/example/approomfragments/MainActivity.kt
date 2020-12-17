@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 select = parent!!.getItemAtPosition(0).toString()
                 profesorFragment!!.update("BBDD")
-                listaFragment!!.leer(select)
+                listaFragment!!.leer("BBDD")
             }
         }
 

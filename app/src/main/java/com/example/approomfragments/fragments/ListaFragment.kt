@@ -70,7 +70,6 @@ class ListaFragment : Fragment() {
     }
 
 
-
     companion object {
         @JvmStatic
         fun newInstance() =
