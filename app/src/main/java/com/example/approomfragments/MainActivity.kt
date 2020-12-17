@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import com.example.approomfragments.database.*
 import com.example.approomfragments.fragments.ListaFragment
 import com.example.approomfragments.fragments.FichaFragment
@@ -122,7 +123,14 @@ class MainActivity : AppCompatActivity() {
             segundoFragmentActivo = false
         }
         else{
-            super.onBackPressed()
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("Atención: ")
+            builder.setMessage("¿Desea salir de la aplicación?")
+
+            builder.setPositiveButton("SI"){ dialog, _ -> finish()}
+            builder.setNegativeButton("NO"){ dialog, which ->  }
+            builder.show()
         }
     }
 
